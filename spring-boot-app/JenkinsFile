@@ -6,21 +6,6 @@ pipeline {
     }
   }
 
- stage('Static Code Analysis') {
-  steps {
-    withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_AUTH_TOKEN')]) {
-      sh '''
-        cd spring-boot-app
-        mvn sonar:sonar \
-          -Dsonar.login=$SONAR_AUTH_TOKEN \
-          -Dsonar.host.url=${SONAR_URL} \
-          -Dsonar.projectKey=jenkin-project-with-java \
-          -Dsonar.projectName="Jenkins Project with Java"
-      '''
-    }
-  }
-}
-
   stages {
     stage('Checkout') {
       steps {
@@ -40,9 +25,10 @@ pipeline {
           sh '''
             cd spring-boot-app
             mvn sonar:sonar \
-              -Dsonar.projectKey=${GIT_REPO_NAME} \
+              -Dsonar.login=$SONAR_AUTH_TOKEN \
               -Dsonar.host.url=${SONAR_URL} \
-              -Dsonar.login=$SONAR_AUTH_TOKEN
+              -Dsonar.projectKey=jenkin-project-with-java \
+              -Dsonar.projectName="Jenkins Project with Java"
           '''
         }
       }
